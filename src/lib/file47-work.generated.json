@@ -275,6 +275,23 @@
       }
     },
     {
+      "id": "unc-banner-tent-final",
+      "section": "marketing",
+      "label": "UNC BANNER TENT FINAL",
+      "src": "/work/unc-banner-tent-final.webp",
+      "master": {
+        "src": "/work/hd/unc-banner-tent-final.webp",
+        "w": 1707,
+        "h": 2560
+      },
+      "source": {
+        "file": "unc banner _ tent final_.png",
+        "w": 2000,
+        "h": 3000,
+        "sha256": "adb2910887cdb716"
+      }
+    },
+    {
       "id": "colorado-concepts",
       "section": "logos",
       "label": "COLORADO CONCEPTS",
