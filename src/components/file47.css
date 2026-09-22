@@ -1,0 +1,624 @@
+/**
+ * FILE47 — the screen.
+ *
+ * What sits on the CRT's glass, and on the page for anyone who cannot have the
+ * room. Printed matter: paper ground, hard black rule, one marker highlight,
+ * monospace. The reel is the whole point of the screen, so everything around it
+ * is deliberately quiet — four words of navigation and a hairline.
+ */
+
+/*
+ * Border-box, scoped to the screen.
+ *
+ * There was no reset, so every `width: 100%` control was its column plus its
+ * own padding and border — an input overhanging its cell by 22px, a folder
+ * tile by 28. On a page that scrolls that is invisible; on the panel, which
+ * has a hard edge and clips, the NAME field ran off the right of the screen
+ * and the end of it was simply gone. Scoped rather than global so it cannot
+ * reach the room's own chrome.
+ */
+.f47,
+.f47 *,
+.f47 *::before,
+.f47 *::after {
+  box-sizing: border-box;
+}
+
+.f47 {
+  --paper: #e6e6e2;
+  --ink: #0b0b0b;
+  --ink-60: #3d3d39;
+  --marker: #f2f04a;
+  --signal: #0333ff;
+
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------- *
+ * Navigation — four words
+ * ---------------------------------------------------------------- */
+
+.f47-nav {
+  display: flex;
+  gap: 2px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.f47-nav button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--ink-60);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  padding: 11px 6px;
+  cursor: pointer;
+}
+
+.f47-nav button:hover {
+  color: var(--ink);
+}
+
+.f47-nav button[aria-current='true'] {
+  background: var(--ink);
+  color: var(--marker);
+}
+
+.f47-body {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ---------------------------------------------------------------- *
+ * WORK — the fourteen pieces
+ *
+ * An index you tap into, not a reel you arrow through. It replaced
+ * six drawn placeholder marks, which meant anyone who took the flat
+ * route was looking at a portfolio site with no portfolio in it.
+ * ---------------------------------------------------------------- */
+
+.f47-work {
+  height: 100%;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/*
+ * On the flat page the return control floats in the bottom-right corner, so
+ * the last row of the index needs somewhere to end that is not underneath it.
+ */
+.rm-flat .f47-work {
+  padding-bottom: 76px;
+}
+
+/* The drawers. Four of them, so they get room to be tapped rather than being
+   squeezed into the same track as fourteen thumbnails. */
+/* 220px, not 150px: at 150 a tile is narrower than ICON + PRODUCTION + a
+   count, and the count printed straight through the end of the name. Four
+   drawers land as 2x2 on the panel and in one row on a wide frame. */
+.f47-folders {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.f47-folder {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  padding: 14px 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.f47-folder:hover,
+.f47-folder:focus-visible {
+  background: var(--marker);
+}
+
+.f47-folder-i {
+  width: 26px;
+  height: 21px;
+  display: block;
+}
+
+/* Truncates rather than running under the count. A longer discipline than any
+   of the four today would otherwise collide the moment it is added. */
+.f47-folder-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+/* The count is a fact about the drawer, so it reads as a stamp rather than as
+   part of the name. */
+.f47-folder-n {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-60);
+  font-variant-numeric: tabular-nums;
+}
+
+.f47-folder:hover .f47-folder-n,
+.f47-folder:focus-visible .f47-folder-n {
+  color: var(--ink);
+}
+
+/* Back out of a drawer. A fingertip target, and it says where it goes. */
+.f47-up {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.f47-up:hover,
+.f47-up:focus-visible {
+  background: var(--marker);
+}
+
+/* Which drawer is open, stated once above its contents. */
+.f47-shelf {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 10px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.f47-shelf span {
+  color: var(--ink-60);
+  font-variant-numeric: tabular-nums;
+}
+
+.f47-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.f47-grid button {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  padding: 0 0 8px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.f47-grid button:hover,
+.f47-grid button:focus-visible {
+  background: var(--marker);
+}
+
+/* Square wells, so fourteen pieces of fourteen different shapes read as one index
+   rather than as a ragged pile. `relative` so the picture inside has a box
+   with a real height to fit itself into — see the rule below. */
+.f47-grid-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-bottom: 2px solid var(--ink);
+  background: #fff;
+}
+
+/* Pinned to the well's edges, then fitted inside them.
+
+   Neither `max-height: 100%` nor `height: 100%` works here: the well takes its
+   height from `aspect-ratio`, and a percentage height on a child of such a box
+   resolves against an indefinite height and falls back to auto. Measured, the
+   tall pieces came out 147×292 in a 147×149 well and were clipped by
+   `overflow: hidden` — the LUCILIGHT device lost its wordmark off the bottom.
+   Absolute inset gives a definite containing block, so `contain` has real
+   bounds to fit the whole picture into. */
+.f47-grid-art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.f47-grid-n {
+  padding: 6px 8px 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--ink-60);
+}
+
+.f47-grid-label {
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+}
+
+/* ---------------------------------------------------------------- *
+ * SERVICES — five rows
+ * ---------------------------------------------------------------- */
+
+.f47-list {
+  display: grid;
+  align-content: start;
+}
+
+.f47-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 14px 14px;
+  cursor: pointer;
+}
+
+.f47-row:hover,
+.f47-row:focus-visible {
+  background: var(--marker);
+}
+
+.f47-row-n {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--ink-60);
+  font-variant-numeric: tabular-nums;
+}
+
+.f47-row:hover .f47-row-n {
+  color: var(--ink);
+}
+
+.f47-row-main {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.f47-row-main strong {
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
+
+.f47-row-main span {
+  font-size: 12px;
+  color: var(--ink-60);
+}
+
+.f47-row:hover .f47-row-main span {
+  color: var(--ink);
+}
+
+.f47-row-band {
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.f47-fine {
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-60);
+}
+
+/* ---------------------------------------------------------------- *
+ * STUDIO — two lines
+ * ---------------------------------------------------------------- */
+
+.f47-studio {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+  height: 100%;
+  padding: 30px;
+}
+
+.f47-studio p {
+  margin: 0;
+  max-width: 24ch;
+  font-size: clamp(18px, 3.4vmin, 30px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.f47-studio p:last-of-type {
+  color: var(--ink-60);
+}
+
+.f47-studio .f47-fine {
+  padding: 0;
+}
+
+/*
+ * The direct line. Set as a definition list because that is what it is — a
+ * label and its value — rather than as two columns faked with spans.
+ */
+.f47-contact {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 16px;
+  margin: 4px 0 0;
+  border-top: 2px solid var(--ink);
+  padding-top: 14px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.f47-contact dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--ink-60);
+  align-self: center;
+}
+
+.f47-contact dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.f47-contact a,
+.f47-fine a,
+.f47-done a:not(.f47-btn) {
+  color: var(--ink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.f47-contact a:hover,
+.f47-fine a:hover,
+.f47-done a:not(.f47-btn):hover {
+  background: var(--marker);
+}
+
+/* A mail link is a fingertip target on a phone like anything else. */
+.f47-contact a,
+.f47-fine a {
+  display: inline-block;
+  padding: 6px 0;
+}
+
+/* ---------------------------------------------------------------- *
+ * BOOK — three fields
+ * ---------------------------------------------------------------- */
+
+.f47-book {
+  display: grid;
+  gap: 10px;
+  padding: 16px 14px 20px;
+}
+
+/*
+ * On a tall frame — a phone, where the screen fills the viewport rather than a
+ * 4:3 panel — the two forms separate instead of both huddling at the top under
+ * a third of a screen of empty paper. The brief stays where a thumb starts and
+ * the reference lookup, which is the secondary errand, goes to the foot of the
+ * page where a secondary errand belongs.
+ */
+@media (max-aspect-ratio: 9 / 10) {
+  .f47-book {
+    min-height: 100%;
+    /* Two children, so this is exactly "brief at the top, lookup at the foot".
+       `margin-top: auto` does not do it here: the tracks are content-sized, so
+       there is no free space inside one for a margin to take. */
+    align-content: space-between;
+  }
+
+  .f47-book > :last-child {
+    padding-top: 18px;
+  }
+}
+
+.f47-book form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+
+.f47-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.f47-field--wide {
+  grid-column: 1 / -1;
+}
+
+.f47-field label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+.f47-field input,
+.f47-field select,
+.f47-field textarea {
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: #f2f2ee;
+  color: var(--ink);
+  font: inherit;
+  padding: 8px 9px;
+  width: 100%;
+}
+
+.f47-field textarea {
+  min-height: 74px;
+  resize: vertical;
+}
+
+.f47-submit {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.f47-btn {
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.f47-btn:hover:not(:disabled) {
+  background: var(--signal);
+}
+
+.f47-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.f47-error {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding-bottom: 10px;
+}
+
+.f47-error {
+  color: #b3231c;
+}
+
+.f47-done {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  height: 100%;
+  padding: 30px;
+}
+
+.f47-ref {
+  margin: 0;
+  font-size: clamp(30px, 7vmin, 54px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: var(--marker);
+  justify-self: start;
+  padding: 2px 8px;
+}
+
+.f47-done p {
+  margin: 0;
+  max-width: 42ch;
+}
+
+.f47-done p:last-child {
+  font-size: 12px;
+  color: var(--ink-60);
+}
+
+/*
+ * The way out when the relay did not carry it. Marked in the studio's yellow
+ * rather than the ink black of SEND: this is not a repeat of the thing that
+ * just did not work, it is the thing that will.
+ */
+.f47-send {
+  justify-self: start;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--marker);
+  border-color: var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.f47-send:hover {
+  background: var(--ink);
+  color: var(--marker);
+}
+
+/* Focus is square and in the signal colour — no inherited glow. */
+.f47 :is(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--signal);
+  outline-offset: 1px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.f47-nav button:focus-visible {
+  outline-offset: -3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .f47 * {
+    transition: none !important;
+  }
+}

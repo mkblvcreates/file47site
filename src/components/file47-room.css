@@ -1,0 +1,1223 @@
+/**
+ * FILE47 — the overlay.
+ *
+ * A game HUD over a dithered room: brackets at the corners, an OSD readout
+ * that counts, and one menu in the bottom third. Everything a client needs is
+ * in the thumb's reach and nothing else is anywhere.
+ */
+
+/**
+ * The OSD face.
+ *
+ * The served file only — no `local()`.
+ *
+ * `local('VCR OSD Mono')` would resolve first on any machine that has a face
+ * by that name installed, and there is no way to know it is this cut. VCR OSD
+ * Mono has circulated in several versions; a visitor's copy with different
+ * metrics would quietly reflow the HUD on their machine and nowhere else.
+ * Typography is the product on a design studio's site, so everyone gets the
+ * same 18 KB file. Then the platform's monospace if that fails, which still
+ * reads — the OSD character is carried by the tracking, the uppercase and the
+ * layout as much as by the glyphs.
+ */
+@font-face {
+  font-family: 'FILE47 OSD';
+  src: url('/fonts/vcr-osd-mono.woff2') format('woff2');
+  font-display: swap;
+  /*
+   * One cut, claimed across the whole range on purpose. VCR OSD Mono ships a
+   * Regular only, and the HUD asks for 700 — declared at 400 the browser
+   * synthesises the bold by smearing the outlines, which on a face built from
+   * hard pixel stems is exactly the wrong failure. Claiming 100–900 hands
+   * every weight the real glyphs instead.
+   */
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+.rm,
+.rm-return,
+.rm-booting {
+  --vcr: 'FILE47 OSD', 'VCR OSD Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --hud: #f2f04a;
+  --hud-dim: #b8b48a;
+  --hud-ink: #0b0b0b;
+  --hud-ground: rgba(8, 7, 5, 0.9);
+}
+
+/**
+ * FILE47 — the room's chrome and its glass.
+ *
+ * Almost nothing. Two controls in the corner, a boot line, and the frame the
+ * site sits in on the CRT. The room does the talking.
+ */
+
+body:has(.rm),
+body:has(.rm-flat) {
+  background: #07060a;
+  overflow: hidden;
+}
+
+.rm {
+  position: fixed;
+  inset: 0;
+  background: #07060a;
+  font-family: var(--vcr);
+
+  /*
+   * How much of each edge the sheet covers, which is the question every other
+   * overlay actually has. `--sheet-h` / `--sheet-w` are its measured size,
+   * published inline by a ResizeObserver; these two say what that means for
+   * the layout, and the stylesheet owns that answer rather than the
+   * measurement — an inline style beats a media query, so publishing one
+   * number straight into `--sheet` silently overrode the landscape rule below
+   * and parked the lower corner brackets two-thirds of the way up the screen.
+   */
+  --sheet: var(--sheet-h, 0px);
+  --rail: 0px;
+}
+
+.rm canvas {
+  display: block;
+  touch-action: none;
+}
+
+/* ---------------------------------------------------------------- *
+ * Chrome
+ * ---------------------------------------------------------------- */
+
+.rm :focus-visible,
+.rm-return :focus-visible {
+  outline: 3px solid #f2f04a;
+  outline-offset: 2px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* ================================================================== *
+ * MOBILE FIRST
+ *
+ * Everything this site does lives in the bottom third, where a thumb
+ * already is. Nothing important sits in the top corners, and no
+ * control is smaller than a fingertip.
+ * ================================================================== */
+
+.rm-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 26;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  /* Clear of the corner brackets: 10px inset plus their 22px arm. */
+  padding-top: max(38px, calc(env(safe-area-inset-top) + 28px));
+  pointer-events: none;
+}
+
+.rm-top > * {
+  pointer-events: auto;
+}
+
+.rm-mark {
+  font-family: var(--vcr);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: #f2f04a;
+  text-shadow: 0 1px 0 #0b0b0b;
+}
+
+.rm-ghost {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid rgba(242, 240, 74, 0.5);
+  background: rgba(8, 7, 5, 0.7);
+  color: #f2f04a;
+  font-family: var(--vcr);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+}
+
+.rm-ghost:hover {
+  background: #f2f04a;
+  color: #0b0b0b;
+}
+
+.rm-caption {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(var(--sheet) + 12px);
+  z-index: 25;
+  margin: 0;
+  text-align: center;
+  font-family: var(--vcr);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #0b0b0b;
+  background: #f2f04a;
+  padding: 9px 10px;
+}
+
+/* ---------------------------------------------------------------- *
+ * The sheet
+ * ---------------------------------------------------------------- */
+
+.rm-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: grid;
+  gap: 0;
+  background: rgba(8, 7, 5, 0.9);
+  border-top: 2px solid #f2f04a;
+  padding-bottom: env(safe-area-inset-bottom);
+  backdrop-filter: blur(3px);
+  font-family: var(--vcr);
+}
+
+.rm-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.rm-tabs button {
+  min-height: 46px;
+  border: 0;
+  border-bottom: 1px solid rgba(242, 240, 74, 0.3);
+  background: transparent;
+  color: #b8b48a;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  cursor: pointer;
+}
+
+.rm-tabs button[aria-selected='true'] {
+  background: #f2f04a;
+  color: #0b0b0b;
+}
+
+/* Work: a horizontal reel of the actual pieces, swiped with a thumb. */
+.rm-strip {
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rm-strip li {
+  flex: none;
+  scroll-snap-align: start;
+}
+
+.rm-strip button {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  width: 92px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: #b8b48a;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 6px 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.rm-strip img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  background: #e6e6e2;
+  /* The strip is a contact sheet off the same tube: chunky, not smooth. */
+  image-rendering: pixelated;
+}
+
+.rm-strip button[aria-current='true'],
+.rm-strip button:hover,
+.rm-strip button:focus-visible {
+  border-color: #f2f04a;
+  color: #f2f04a;
+}
+
+/* Services: five rows, each one books. */
+.rm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 152px;
+  overflow-y: auto;
+}
+
+.rm-list button {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-bottom: 1px solid rgba(242, 240, 74, 0.22);
+  background: transparent;
+  color: #f4f2df;
+  font: inherit;
+  text-align: left;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.rm-list button:hover,
+.rm-list button:focus-visible {
+  background: #f2f04a;
+  color: #0b0b0b;
+}
+
+.rm-list-n {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  color: #b8b48a;
+}
+
+.rm-list button:hover .rm-list-n,
+.rm-list button:focus-visible .rm-list-n {
+  color: #0b0b0b;
+}
+
+.rm-list-main {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.rm-list-main strong {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.rm-list-main span {
+  font-size: 10px;
+  color: #b8b48a;
+}
+
+.rm-list button:hover .rm-list-main span,
+.rm-list button:focus-visible .rm-list-main span {
+  color: #0b0b0b;
+}
+
+.rm-list-band {
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid currentColor;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* One button, always in the same place, always the same words. */
+.rm-book {
+  min-height: 54px;
+  border: 0;
+  border-top: 2px solid #0b0b0b;
+  background: #f2f04a;
+  color: #0b0b0b;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  cursor: pointer;
+}
+
+.rm-book:hover {
+  background: #fff;
+}
+
+/* From tablet up the sheet is a column against one edge, so the room gets
+   the middle of the screen back. The order of the controls never changes. */
+@media (min-width: 760px) {
+  .rm {
+    /* A column down the left edge: it covers no part of the bottom, and the
+       width it does cover is what overlays have to start clear of. */
+    --sheet: 0px;
+    --rail: var(--sheet-w, 340px);
+  }
+
+  .rm-sheet {
+    /* Below the top bar, measured — see `--top` in File47Entry. Parked at a
+       hard 64px it sat under the mark, and the mark drew through it. */
+    top: calc(var(--top, 64px) + 8px);
+    right: auto;
+    bottom: 20px;
+    left: 20px;
+    width: 340px;
+    border: 2px solid #f2f04a;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .rm-strip {
+    flex-wrap: wrap;
+    overflow-y: auto;
+    align-content: start;
+  }
+
+  .rm-list {
+    max-height: none;
+  }
+
+  .rm-caption {
+    left: auto;
+    right: 20px;
+    bottom: 20px;
+    width: auto;
+    max-width: 42vw;
+  }
+}
+
+/* The loader names the stage and the number — "frozen at 1%" is a bug
+   report, a spinning circle is not. */
+.rm-loading {
+  margin: 0;
+  white-space: nowrap;
+  border: 1px solid rgba(242, 240, 74, 0.5);
+  background: rgba(10, 8, 12, 0.86);
+  color: #f2f04a;
+  font-family: var(--vcr);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  padding: 10px 14px;
+}
+
+/* ---------------------------------------------------------------- *
+ * The glass
+ * ---------------------------------------------------------------- */
+
+/**
+ * The frame the site occupies on the CRT face. Fixed pixels, scaled into world
+ * units by the distanceFactor — so the type stays vector-sharp and the booking
+ * form is a form, not a picture of one baked into a texture.
+ */
+.rm-glass {
+  /* Matches GLASS_PX in file47-room.ts — the scale that maps this onto the
+     tube is derived from it, so the two must stay in step. */
+  width: 720px;
+  height: 540px;
+  overflow: hidden;
+  background: #e6e6e2;
+  /* The tube's character, at a strength that costs no legibility. */
+  box-shadow:
+    inset 0 0 46px rgba(20, 14, 8, 0.34),
+    0 0 60px rgba(159, 200, 255, 0.16);
+}
+
+/**
+ * The booking screen is real DOM on the glass, so the shader that dithers the
+ * room cannot touch it — the browser composites this above the canvas. It gets
+ * a matched treatment here instead: the same scanline pitch, and a dot grid
+ * standing in for the dither.
+ *
+ * Deliberately lighter than the shader. This is the form a client fills in,
+ * and an illegible form takes no bookings — the room can be a tube, the type
+ * cannot.
+ */
+.rm-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background-image:
+    repeating-linear-gradient(180deg, rgba(11, 11, 11, 0.06) 0 1px, transparent 1px 3px),
+    radial-gradient(rgba(11, 11, 11, 0.5) 0.5px, transparent 0.6px);
+  background-size:
+    auto,
+    3px 3px;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+/**
+ * The site, off the glass.
+ *
+ * On a frame narrower than the glass can hold — a phone held upright, mostly —
+ * the booking screen comes off the CRT and fills the viewport as ordinary DOM.
+ * The room stays behind it and the bezel stays around it, so it still reads as
+ * a monitor filling the frame, but the type is at its authored size instead of
+ * at whatever half-size a 720px-wide layout survives being squeezed to.
+ *
+ * This is the mobile-first answer to a 4:3 screen in a 9:19.5 frame. There is
+ * no camera move that fixes that shape mismatch: framing the screen's height
+ * runs its navigation off both sides, and framing its width leaves the type
+ * too small to read. So the screen stops being a thing in the room and starts
+ * being the screen.
+ */
+.rm-console {
+  position: absolute;
+  inset: 0;
+  z-index: 24;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  /* Starts below the top bar, measured rather than guessed — see `--top` in
+     File47Entry. Without it the screen's own four words of navigation sit
+     underneath the OSD readout, which is where they were. */
+  padding: calc(var(--top, 92px) + 4px) 8px max(8px, env(safe-area-inset-bottom));
+  background: rgba(6, 5, 9, 0.9);
+}
+
+.rm-console > * {
+  position: relative;
+  min-height: 0;
+  border: 2px solid #0b0b0b;
+  /* The bezel, in the HUD's own yellow, so the screen belongs to the overlay
+     rather than looking like a web page that opened on top of it. */
+  outline: 1px solid rgba(242, 240, 74, 0.34);
+  box-shadow:
+    inset 0 0 60px rgba(20, 14, 8, 0.28),
+    0 0 70px rgba(159, 200, 255, 0.14);
+}
+
+/**
+ * The tube's signature, and only its signature.
+ *
+ * A scanline at the display's own pitch and nothing else — no dot grid. The
+ * grid is what gives the glass its texture at 720px across a 1.6m panel, and
+ * at 1:1 on a phone the same grid lands on the type itself and eats the
+ * counters out of 11px letterforms. This is the screen a client fills a form
+ * in on their phone; it is allowed to look like a CRT and it is not allowed to
+ * cost them a character.
+ */
+.rm-console > *::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(11, 11, 11, 0.05) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rm-console > *::after {
+    background-image: none;
+  }
+}
+
+/*
+ * Off the glass the screen is at 1:1, so its controls are being touched at
+ * their authored size for the first time. 38px is a pointer target; this is a
+ * thumb.
+ */
+.rm-console .f47-nav button {
+  min-height: 44px;
+}
+
+.rm-boot {
+  width: 720px;
+  height: 540px;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 0 48px;
+  background: #06080a;
+  color: #f0e163;
+  font-family: var(--vcr);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 12px rgba(240, 225, 99, 0.5);
+}
+
+.rm-caret {
+  width: 14px;
+  height: 26px;
+  background: #f0e163;
+  animation: rm-blink 1s steps(1) infinite;
+}
+
+@keyframes rm-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.rm-booting {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #0a080c;
+  color: #f0e163;
+  font-family: var(--vcr);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4em;
+}
+
+/* ---------------------------------------------------------------- *
+ * Flat — the same screen, on a page
+ * ---------------------------------------------------------------- */
+
+.rm-flat {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(0px, 3vmin, 34px);
+  background: #0a080c;
+}
+
+.rm-flat > * {
+  width: min(100%, 820px);
+  height: min(100%, 620px);
+  border: 2px solid #0b0b0b;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+/**
+ * The panel, pulled closer.
+ *
+ * Laid out at the authored 720x540 and scaled, rather than sized to the
+ * viewport: that keeps the flat page pixel-identical to what the room maps
+ * onto the glass — every rule and every type size in the same proportion to
+ * the screen — instead of a reflow that would slowly become a second design.
+ * `--f47-zoom` is fitted on both axes in `flatScale`, so the whole panel is in
+ * the window and `overflow: hidden` on the stage has nothing to clip.
+ */
+.rm-flat--panel {
+  overflow: hidden;
+  padding: 0;
+}
+
+.rm-flat--panel > * {
+  width: 720px;
+  height: 540px;
+  max-width: none;
+  max-height: none;
+  transform: scale(var(--f47-zoom, 1));
+  transform-origin: center;
+}
+
+@media (max-width: 760px) {
+  /* The room is not served at this width, but the rail must still fit if a
+     visitor forces it. */
+  .rm-rail {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    width: auto;
+  }
+
+  .rm-flat {
+    padding: 0;
+  }
+  .rm-flat > * {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .rm-chrome {
+    left: 10px;
+    bottom: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rm-caret {
+    animation: none;
+  }
+}
+
+/* The screen at rest. Matches the baked CRT faces so it belongs to the bank,
+   but carries the mark so it reads as the way in rather than as furniture. */
+.rm-idle {
+  position: relative;
+  width: 720px;
+  height: 540px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 14px;
+  border: 0;
+  padding: 0;
+  background: #fbf6c6;
+  color: #0b0b0b;
+  font-family: var(--vcr);
+  cursor: pointer;
+}
+
+.rm-idle:hover,
+.rm-idle:focus-visible {
+  background: #ffffff;
+}
+
+/* The invitation, on the screen it opens. */
+.rm-idle-open {
+  margin-top: 10px;
+  padding: 12px 26px;
+  background: #0b0b0b;
+  color: #f2f04a;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  /* The tracking above is applied after every glyph, including the last, which
+     otherwise reads as a wider right-hand pad than left. */
+  text-indent: 0.34em;
+}
+
+.rm-idle:hover .rm-idle-open {
+  background: #0333ff;
+  color: #ffffff;
+}
+
+.rm-idle-mark {
+  font-size: 92px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.rm-idle-line {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #4a4630;
+}
+
+/* Nothing to read here but the mark, so this one takes the full dot grid. */
+.rm-idle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(11, 11, 11, 0.55) 0.9px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: multiply;
+}
+
+/* ================================================================== *
+ * THE HUD
+ *
+ * Brackets at the corners, an OSD readout that counts, a cursor that
+ * points at what is selected. Every part of it is decoration over a
+ * real control — none of it is the only way to reach anything.
+ * ================================================================== */
+
+.hud {
+  position: absolute;
+  inset: 0;
+  z-index: 22;
+  pointer-events: none;
+}
+
+/* Four corner brackets. The frame a camera puts on the world. */
+.hud-c {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--hud);
+  opacity: 0.85;
+}
+
+.hud-c--tl {
+  top: 10px;
+  left: 10px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.hud-c--tr {
+  top: 10px;
+  right: 10px;
+  border-left: 0;
+  border-bottom: 0;
+}
+.hud-c--bl {
+  bottom: 10px;
+  left: 10px;
+  border-right: 0;
+  border-top: 0;
+}
+.hud-c--br {
+  bottom: 10px;
+  right: 10px;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* The corner brackets sit inside the sheet's edge once it is a bottom bar,
+   so the lower pair hides rather than colliding with it. */
+.hud-c--bl,
+.hud-c--br {
+  bottom: calc(var(--sheet) + 10px);
+}
+
+/* ---------------------------------------------------------------- *
+ * The readout
+ * ---------------------------------------------------------------- */
+
+.hud-osd {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  /* A plate, because the readout floats over whatever is on the wall behind
+     it — and a bright work screen leaves 10px type with nothing to sit on. */
+  background: rgba(8, 7, 5, 0.74);
+  padding: 5px 9px;
+  font-family: var(--vcr);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--hud-dim);
+}
+
+.hud-tc {
+  color: var(--hud);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The lamp. A tape deck blinks; so does this, and for the same reason —
+   it is the only thing on the overlay that says the picture is live. */
+.hud-rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hud-rec i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff4040;
+  animation: hud-blink 1.6s steps(1) infinite;
+}
+
+@keyframes hud-blink {
+  55%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Menu chrome
+ * ---------------------------------------------------------------- */
+
+/* The cursor. One caret, on whatever is selected, exactly where a menu
+   from a disc would have put it. */
+.rm-list button::before,
+.rm-strip button::before {
+  content: '▶';
+  color: transparent;
+}
+
+.rm-list button::before {
+  font-size: 9px;
+  line-height: 1;
+}
+
+.rm-list button:hover::before,
+.rm-list button:focus-visible::before,
+.rm-list button[aria-current='true']::before {
+  color: currentColor;
+}
+
+.rm-list button {
+  grid-template-columns: 10px 28px minmax(0, 1fr) 26px;
+}
+
+/* Slot numbers on the work, so the strip reads as a rack and not a gallery. */
+.rm-slot {
+  font-family: var(--vcr);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  color: var(--hud-dim);
+}
+
+.rm-strip button[aria-current='true'] .rm-slot,
+.rm-strip button:hover .rm-slot,
+.rm-strip button:focus-visible .rm-slot {
+  color: var(--hud);
+}
+
+.rm-strip button::before {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 9px;
+  line-height: 1;
+  color: transparent;
+}
+
+.rm-strip button {
+  position: relative;
+}
+
+.rm-strip button[aria-current='true']::before,
+.rm-strip button:hover::before,
+.rm-strip button:focus-visible::before {
+  color: var(--hud);
+}
+
+/* Tabs get the bracket treatment rather than a pill. */
+.rm-tabs button::before {
+  content: '[ ';
+  opacity: 0;
+}
+.rm-tabs button::after {
+  content: ' ]';
+  opacity: 0;
+}
+.rm-tabs button[aria-selected='true']::before,
+.rm-tabs button[aria-selected='true']::after {
+  opacity: 1;
+}
+
+/* The one action, pressed like a key rather than clicked like a link. */
+.rm-book {
+  position: relative;
+  box-shadow: inset 0 -4px 0 rgba(11, 11, 11, 0.35);
+}
+
+.rm-book:active {
+  box-shadow: inset 0 4px 0 rgba(11, 11, 11, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-rec i {
+    animation: none;
+  }
+}
+
+/* ================================================================== *
+ * THE PLATE — a piece of work, close up
+ *
+ * The room shows the work at 512px through a dither, which is right
+ * for a wall of monitors and wrong for deciding whether to hire the
+ * studio. Selecting a piece opens the master here, in DOM at the
+ * device's own resolution, with pinch, wheel and drag.
+ *
+ * Inset rather than full-bleed, so the dithered room stays visible
+ * around it: the work is being looked at in the room, not in a
+ * lightbox that replaced the room.
+ * ================================================================== */
+
+.pl {
+  position: absolute;
+  z-index: 23;
+  top: calc(var(--top, 92px) + 6px);
+  /* Clear of the sheet on whichever edge it is on: above it on a phone, beside
+     it from tablet up. `--rail` is 0 in portrait, so one rule covers both. */
+  left: 10px;
+  right: 10px;
+  bottom: calc(var(--sheet, 0px) + 10px);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.pl > * {
+  pointer-events: auto;
+}
+
+.pl-frame {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #0b0b0b;
+  border: 2px solid #f2f04a;
+  /* The gestures are ours: no browser pan or page zoom inside the plate. */
+  touch-action: none;
+  cursor: default;
+}
+
+.pl-frame[data-zoomable='true'] {
+  cursor: zoom-in;
+}
+
+.pl-frame[data-moved='true'] {
+  cursor: grab;
+}
+
+.pl-frame[data-moved='true']:active {
+  cursor: grabbing;
+}
+
+.pl-img {
+  position: absolute;
+  transform-origin: center center;
+  user-select: none;
+  -webkit-user-drag: none;
+  /* No smoothing at the top end: past 1:1 the honest thing is to show the
+     pixels that exist rather than a blur that implies more of them. */
+  image-rendering: auto;
+}
+
+/*
+ * The room's own texture, underneath, already decoded — so the plate is never
+ * empty while the master is in flight. A lower-resolution version of the right
+ * picture is a far better first frame than a spinner.
+ */
+.pl-img--placeholder {
+  filter: blur(1px);
+}
+
+.pl-img[data-loaded='false'] {
+  opacity: 0;
+}
+
+.pl-img[data-loaded='true'] {
+  opacity: 1;
+  transition: opacity 180ms linear;
+}
+
+.pl-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 6px 10px;
+  min-height: 44px;
+  padding: 0 4px;
+  font-family: var(--vcr);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #f2f04a;
+  text-shadow: 0 1px 0 #0b0b0b;
+}
+
+.pl-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pl-zoom {
+  background: #f2f04a;
+  color: #0b0b0b;
+  padding: 4px 8px;
+  min-width: 4.5em;
+  text-align: center;
+}
+
+.pl-btn {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid #f2f04a;
+  background: rgba(8, 7, 5, 0.8);
+  color: #f2f04a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.pl-btn:hover {
+  background: #f2f04a;
+  color: #0b0b0b;
+}
+
+/* Its own row under the bar, spanning it — below the picture, never over it. */
+.pl-tip {
+  grid-column: 1 / -1;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: #0b0b0b;
+  background: rgba(242, 240, 74, 0.92);
+  padding: 5px 8px;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-img[data-loaded='true'] {
+    transition: none;
+  }
+}
+
+/*
+ * The way back into the room from the flat screen.
+ *
+ * This used to be a 10px ghost label in the bottom corner. On a phone the flat
+ * screen fills the viewport, so that is a control nobody finds — and being
+ * unable to get back to the thing you were just in reads as the site losing
+ * it, not as a preference being honoured. Same register as the room's own top
+ * bar, a fingertip tall, above the screen rather than in its margin.
+ */
+/*
+ * Out of the way while a piece is open.
+ *
+ * `.rm-flat` is fixed, so it makes its own stacking context and the plate's
+ * z-index is scoped inside it — which put this floating control *above* a
+ * full-screen plate and swallowed taps meant for CLOSE. It is also the wrong
+ * control to be offering at that moment: the only buttons on a piece of work
+ * should be the piece's.
+ */
+body:has(.pl--flat) .rm-return {
+  display: none;
+}
+
+.rm-return {
+  position: fixed;
+  z-index: 30;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: min(92vw, 520px);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.rm-return-why {
+  font-family: var(--vcr);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #0b0b0b;
+  background: rgba(242, 240, 74, 0.94);
+  padding: 6px 9px;
+  text-align: right;
+}
+
+.rm-return .rm-ghost {
+  background: rgba(8, 7, 5, 0.88);
+  backdrop-filter: blur(3px);
+}
+
+/*
+ * From tablet up the sheet is a column down the left edge, so the plate sits
+ * beside it rather than above it. Declared here, after the plate's own rules,
+ * because both selectors are `.pl` and the later one wins — the same override
+ * placed with the other landscape rules lost silently and left the picture
+ * underneath the controls.
+ */
+@media (min-width: 760px) {
+  .pl {
+    /* The rail is inset 20px and the plate clears it by 12. */
+    left: calc(32px + var(--rail));
+    bottom: 20px;
+  }
+}
+
+/*
+ * The plate, opened from the flat page.
+ *
+ * There is no room behind it there, so it fills the screen rather than being
+ * inset into the frame the HUD and the sheet leave. Fixed to the viewport, not
+ * to the screen it opened from: the flat screen scrolls, and a plate that
+ * scrolled with it would be a picture you had to chase.
+ *
+ * It brings the room's tokens with it — this file's `--vcr` and the yellow are
+ * declared on `.rm`, which is not an ancestor here.
+ */
+.pl--flat {
+  --vcr: 'FILE47 OSD', 'VCR OSD Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+  background: rgba(6, 5, 9, 0.94);
+}
+
+/* The room's landscape rule pushes the plate clear of the rail; the flat one
+   has no rail to clear, and this file's later rules would otherwise win. */
+@media (min-width: 760px) {
+  .pl--flat {
+    left: 0;
+    bottom: 0;
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * The sheet's drawers
+ *
+ * The strip shows four disciplines, then what is in one.
+ *
+ * Every rule here is scoped `.rm-strip .rm-drawer`, not bare `.rm-drawer`.
+ * A drawer is a button inside the strip, so `.rm-strip button` — a class and a
+ * type, specificity 0-1-1 — already matches it and beats a lone class at
+ * 0-1-0. Written bare, the tile silently kept the piece tiles' width no matter
+ * where in the file the rule sat, which is exactly what happened twice.
+ * Shared appearance is inherited from `.rm-strip button` on purpose; only what
+ * differs is stated.
+ * ---------------------------------------------------------------- */
+
+.rm-strip .rm-drawer {
+  /* Wide enough to pair up in the landscape rail; see the block at the end. */
+  width: var(--drawer-w, 92px);
+}
+
+/* A drawer front, drawn in CSS: a box with a tab along its top edge. Sized to
+   the same 64px square the piece thumbnails occupy so the two levels of the
+   strip line up. */
+.rm-drawer-i {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  border: 2px solid currentColor;
+  border-top-width: 14px;
+}
+
+.rm-drawer-i::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 12px;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* Going back is not a drawer, so it does not draw one. */
+.rm-drawer-i--up {
+  border-top-width: 2px;
+  border-style: dashed;
+}
+
+.rm-drawer-i--up::after {
+  display: none;
+}
+
+/* Four drawers in the 340px rail wrap 3 + 1 at the piece tiles' width, which
+   strands MARKETING on a row of its own. Widened, they pair up and read as one
+   block of four. Set on the strip, not the tile, so it inherits. */
+@media (orientation: landscape) {
+  .rm-strip {
+    --drawer-w: 148px;
+  }
+}

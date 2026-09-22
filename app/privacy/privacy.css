@@ -1,0 +1,179 @@
+/**
+ * FILE47 — the document register.
+ *
+ * The same printed matter FILE47's screens are set in — paper ground, hard
+ * black rule, marker highlight, monospace — but as a document that scrolls
+ * rather than a panel that fits. No CRT, no dither, no HUD: this is the page
+ * someone reads carefully before deciding whether to trust a form, and every
+ * effect that makes the rest of the site feel like a machine would be working
+ * against that here.
+ */
+
+.doc {
+  --paper: #e6e6e2;
+  --ink: #0b0b0b;
+  --ink-60: #3d3d39;
+  --marker: #f2f04a;
+
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  /* One gutter, set once, so nothing can scroll sideways on a phone. */
+  padding: 0 clamp(16px, 5vw, 40px) 72px;
+}
+
+/* The rest of the site pins the body for a fixed room. A document has to
+   scroll, so it says so for itself. */
+body:has(.doc) {
+  background: #e6e6e2;
+  overflow: auto;
+}
+
+.doc > * {
+  max-width: 68ch;
+  margin-inline: auto;
+}
+
+.doc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-bottom: 2px solid var(--ink);
+  padding: 22px 0 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.doc-back {
+  color: var(--ink);
+  text-decoration: none;
+  /* A fingertip, not a hyperlink. */
+  display: inline-block;
+  min-height: 44px;
+  line-height: 44px;
+  padding-right: 8px;
+}
+
+.doc-back:hover,
+.doc-back:focus-visible {
+  background: var(--marker);
+}
+
+.doc-date {
+  color: var(--ink-60);
+}
+
+.doc-title {
+  margin: 34px 0 18px;
+  font-size: clamp(30px, 8vmin, 58px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.doc-lede {
+  margin: 0 0 8px;
+  font-size: clamp(15px, 2.4vmin, 18px);
+  font-weight: 700;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.doc h2 {
+  margin: 38px 0 10px;
+  border-top: 2px solid var(--ink);
+  padding-top: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.doc p {
+  margin: 0 0 12px;
+  text-wrap: pretty;
+}
+
+.doc ul {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.doc li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 4px;
+}
+
+/* Square dashes, as everywhere else in FILE47 — not a bullet glyph. */
+.doc li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 10px;
+  height: 2px;
+  background: var(--ink);
+}
+
+.doc a {
+  color: var(--ink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.doc a:hover {
+  background: var(--marker);
+}
+
+.doc code {
+  font: inherit;
+  background: rgba(11, 11, 11, 0.08);
+  padding: 1px 4px;
+}
+
+/*
+ * A value FILE47 has not supplied yet.
+ *
+ * Marked rather than hidden, and marked in the studio's own yellow, so the
+ * document reads as one awaiting a signature rather than as a template nobody
+ * finished — and so that shipping without it is impossible to miss.
+ */
+.doc-todo {
+  background: var(--marker);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+.doc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-top: 2px solid var(--ink);
+  margin-top: 44px;
+  padding-top: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--ink-60);
+}
+
+.doc :focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}

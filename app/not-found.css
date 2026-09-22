@@ -1,0 +1,47 @@
+/* The 404, in the room's own palette rather than the OS's midnight glass. */
+.nf {
+  min-height: 100dvh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 16px;
+  background: #07060a;
+  color: #f2f04a;
+  font-family: 'FILE47 OSD', 'VCR OSD Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  padding: 24px;
+  text-align: center;
+}
+
+.nf-code {
+  margin: 0;
+  font-size: clamp(64px, 22vmin, 180px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+}
+
+.nf-line {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #b8b48a;
+}
+
+.nf-back {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #f2f04a;
+  padding: 0 18px;
+  color: #f2f04a;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+}
+
+.nf-back:hover {
+  background: #f2f04a;
+  color: #0b0b0b;
+}

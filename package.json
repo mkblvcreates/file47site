@@ -1,0 +1,45 @@
+{
+  "name": "file47-site",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "next dev --port 3200",
+    "build": "next build",
+    "start": "next start --port 3200",
+    "lint": "eslint app src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:e2e": "playwright test",
+    "work": "./scripts/work.sh",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "@react-three/drei": "10.7.8",
+    "@react-three/fiber": "9.7.0",
+    "next": "16.2.11",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.61.1",
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.185.4",
+    "eslint": "10.8.1",
+    "eslint-config-next": "16.2.11",
+    "prettier": "3.9.6",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.67.0",
+    "vitest": "4.1.10"
+  }
+}

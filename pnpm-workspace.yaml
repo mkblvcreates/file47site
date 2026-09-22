@@ -1,0 +1,15 @@
+# Not a workspace — this repository is one package. pnpm 11 reads these
+# settings from here rather than from package.json, which is the only reason
+# this file exists.
+allowBuilds:
+  # Next.js image optimization native binary.
+  sharp: true
+  # Native module resolver used by the ESLint import plugin.
+  unrs-resolver: true
+# Patched versions of transitive dependencies flagged by the dependency audit.
+overrides:
+  sharp: 0.35.3
+  postcss: 8.5.26
+  nanoid: 3.3.18
+  brace-expansion@1: 1.1.18
+  brace-expansion@5: 5.0.9

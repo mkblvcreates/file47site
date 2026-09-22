@@ -1,0 +1,58 @@
+# Every push and every pull request, on the whole site.
+#
+# The gate is the same one `pnpm verify` runs locally, plus the end-to-end
+# suite, so nothing passes here that would fail on a laptop.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Format
+        run: pnpm format:check
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+
+      # The room is WebGL, and a CI runner has no GPU — software rendering
+      # makes those specs a flaky gate rather than a useful one. The flat path
+      # is where the booking flow, the work index and the privacy notice live,
+      # and all of it runs here.
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: End-to-end
+        run: pnpm exec playwright test --grep-invert '@room'
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      # Not a gate. A piece labelled from its filename is on the site and
+      # working; it just has not been introduced properly yet.
+      - name: Pieces still showing a filename
+        if: always()
+        run: node scripts/unnamed.mjs >> "$GITHUB_STEP_SUMMARY"
