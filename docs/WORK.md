@@ -239,9 +239,21 @@ reaches the drawers with no code change.
 
 **The originals live in the repository.** `work-source/` holds every supplied
 file, so the site can be rebuilt from its own sources: a clean checkout plus
-`pnpm work` reproduces `public/work/` byte for byte. That was verified — 130 of
-130 files identical — and it is the reason the sources are committed rather
-than kept somewhere else.
+`pnpm work` reproduces `public/work/`. That is the reason the sources are
+committed rather than kept in someone's Drive.
+
+It reproduces **byte for byte on the same poppler**, and 128 of 130 files on a
+different one. `DAT STUF.pdf` is the exception: its pages carry text, and
+poppler 24.02 and the version on GitHub's runners hint it differently, so the
+two `dat-stuf` images and their masters come out with the same dimensions and
+different pixels. Visually identical, and it does not converge — a local run
+will show that four-file diff again.
+
+**So the Action is the source of truth for the converted files.** It always runs
+on the same runner image family, so its output is stable. If a local `pnpm work`
+leaves a `dat-stuf` diff and nothing else, that is this and not a change worth
+committing — `git checkout public/work src/lib/file47-work.generated.json` and
+let the Action do it.
 
 The converter deliberately stops short of two things: where a piece hangs in
 the room is composed by hand against the geometry in `file47-room.ts`, and the

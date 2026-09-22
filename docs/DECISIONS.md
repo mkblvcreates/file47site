@@ -260,11 +260,18 @@ redeploys. Adding work no longer needs a checkout, a toolchain or a person who
 knows what `pdftoppm` is.
 
 **The originals are committed.** `work-source/` holds every supplied file, so
-the site rebuilds from its own sources: a clean checkout plus `pnpm work`
-reproduces `public/work/` byte for byte — verified, 130 of 130 files identical.
-That costs 37 MB in the repository and buys a handoff that cannot rot, which is
-the right trade for a portfolio whose sources would otherwise live in one
-person's Drive.
+the site rebuilds from its own sources. That costs 37 MB in the repository and
+buys a handoff that cannot rot, which is the right trade for a portfolio whose
+sources would otherwise live in one person's Drive.
+
+Reproducible byte for byte on the same poppler; 128 of 130 files across
+versions. The first Action run found the exception and it is worth recording:
+`DAT STUF.pdf` carries text, and poppler hints it differently between 24.02 and
+the version on GitHub's runners, so those two pages and their masters differ in
+pixels at identical dimensions. It does not converge, so the Action — which
+always runs the same image family — is the source of truth for the converted
+files, and a lone `dat-stuf` diff from a local run is noise rather than a
+change.
 
 **`scripts/unnamed.mjs`.** A new piece is labelled from its filename, which is a
 placeholder and not a name. This lists the ones still waiting, and both
