@@ -54,6 +54,57 @@
       }
     },
     {
+      "id": "in-the-field",
+      "section": "clothing",
+      "label": "IN THE FIELD",
+      "src": "/work/in-the-field.webp",
+      "master": {
+        "src": "/work/hd/in-the-field.webp",
+        "w": 2000,
+        "h": 2000
+      },
+      "source": {
+        "file": "IN-THE-FIELD.png",
+        "w": 2000,
+        "h": 2000,
+        "sha256": "01e1a17b988d6838"
+      }
+    },
+    {
+      "id": "lily-nova-2",
+      "section": "clothing",
+      "label": "LILY NOVA 2",
+      "src": "/work/lily-nova-2.webp",
+      "master": {
+        "src": "/work/hd/lily-nova-2.webp",
+        "w": 1894,
+        "h": 2560
+      },
+      "source": {
+        "file": "LILY NOVA-2.png",
+        "w": 2000,
+        "h": 2703,
+        "sha256": "6cc4bb18119efa3a"
+      }
+    },
+    {
+      "id": "lily-nova",
+      "section": "clothing",
+      "label": "LILY NOVA",
+      "src": "/work/lily-nova.webp",
+      "master": {
+        "src": "/work/hd/lily-nova.webp",
+        "w": 2000,
+        "h": 2000
+      },
+      "source": {
+        "file": "LILY NOVA.png",
+        "w": 2000,
+        "h": 2000,
+        "sha256": "c091c8399511667c"
+      }
+    },
+    {
       "id": "new-jug",
       "section": "clothing",
       "label": "NEW JUG",
