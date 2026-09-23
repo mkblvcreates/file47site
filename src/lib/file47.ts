@@ -128,25 +128,34 @@ export function mailtoBrief(brief: {
  * ------------------------------------------------------------------ */
 
 /**
- * The two facts in the privacy notice that MKBLV cannot know.
+ * The facts in the privacy notice that only FILE47 can supply.
  *
  * Everything else on that page is a statement about what the code actually
- * does, and is true as written. These two are FILE47's to decide — a
- * registered legal name and a retention commitment — and inventing either
+ * does, and is true as written. These are FILE47's to give, and inventing one
  * would be exactly the fabrication this site refuses everywhere, on the one
- * page where a
- * reader is entitled to take every word literally.
+ * page where a reader is entitled to take every word literally.
  *
- * Left null, the page renders them as TO CONFIRM rather than as a bracketed
+ * Left null, the page renders a value as TO CONFIRM rather than as a bracketed
  * template placeholder, so the document reads as one awaiting a signature
- * rather than one nobody finished. Filling them in is a content change: set
- * the values here and the page follows.
+ * rather than one nobody finished. Filling one in is a content change: set the
+ * value here and the page follows.
+ *
+ * `entity` and `address` are separate fields because they arrived separately.
+ * One field covering "registered name and address" meant that supplying the
+ * name would quietly have made the page assert an address nobody had given.
+ *
+ * `updated` is the date printed on the notice, and it moves when the notice
+ * changes — the page promises exactly that, so it is not decoration. It had
+ * gone stale: the booking flow became a mailto and the notice was rewritten
+ * around it without this being touched.
  */
 export const PRIVACY = {
   /** Changed whenever the notice itself changes, not on every deploy. */
-  updated: '13 SEPTEMBER 2026',
-  /** Registered legal name and address of the practice. */
-  entity: null as string | null,
+  updated: '23 SEPTEMBER 2026',
+  /** Registered legal name of the practice. */
+  entity: 'FILE.47' as string | null,
+  /** Registered address. */
+  address: null as string | null,
 } as const;
 
 /* ------------------------------------------------------------------ *

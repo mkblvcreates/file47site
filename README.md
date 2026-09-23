@@ -43,6 +43,7 @@ pnpm dev          # http://localhost:3200
 | `pnpm test`     | unit tests only — fast, no browser                            |
 | `pnpm test:e2e` | end-to-end, in a real browser                                 |
 | `pnpm work`     | convert `work-source/` by hand (the Action does this for you) |
+| `pnpm icons`    | rebuild the tab and home-screen icons from `brand/`           |
 | `pnpm build`    | a production build                                            |
 
 **There is nothing to configure.** No `.env`, no API key, no database. The app

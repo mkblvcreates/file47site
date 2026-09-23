@@ -597,14 +597,17 @@ test.describe('FILE47', () => {
       page,
     }) => {
       await page.goto('/privacy');
-      // The legal entity is FILE47's to supply. Until it does, the page says so
-      // — on the one page a reader takes literally, a plausible invention is
-      // the worst possible failure.
+      // What FILE47 has not supplied, the page says it has not supplied — on
+      // the one page a reader takes literally, a plausible invention is the
+      // worst possible failure.
       //
-      // One mark, not two. The retention period was the other, and it is gone
-      // because the site now keeps nothing: there is no second copy to retain,
-      // so there is no period left to confirm.
+      // The registered name arrived, so it is printed. The address has not, so
+      // one mark is left. They are separate fields for exactly this reason:
+      // when the two shared one, supplying the name would have made the page
+      // assert an address nobody had given.
+      await expect(page.getByText(/Registered name: FILE\.47/)).toBeVisible();
       await expect(page.locator('.doc-todo')).toHaveCount(1);
+      await expect(page.getByText(/Registered address:/)).toBeVisible();
       await expect(page.getByText(/keeps no database/)).toBeVisible();
     });
 

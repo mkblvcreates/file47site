@@ -15,6 +15,7 @@
     "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
     "work": "./scripts/work.sh",
+    "icons": "./scripts/icons.sh",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
