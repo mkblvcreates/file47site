@@ -143,6 +143,7 @@ export function mailtoBrief(brief: {
  * `entity` and `address` are separate fields because they arrived separately.
  * One field covering "registered name and address" meant that supplying the
  * name would quietly have made the page assert an address nobody had given.
+ * Both are filled now, so nothing on that page is outstanding.
  *
  * `updated` is the date printed on the notice, and it moves when the notice
  * changes — the page promises exactly that, so it is not decoration. It had
@@ -154,8 +155,8 @@ export const PRIVACY = {
   updated: '23 SEPTEMBER 2026',
   /** Registered legal name of the practice. */
   entity: 'FILE.47' as string | null,
-  /** Registered address. */
-  address: null as string | null,
+  /** Registered address, as FILE47 gave it. */
+  address: 'Denver, Colorado' as string | null,
 } as const;
 
 /* ------------------------------------------------------------------ *

@@ -21,8 +21,22 @@ rewritten to make the move — only the two dependencies a deleted API route had
 left behind had to be dropped.
 
 Everything below is the client's to replace: the palette, the section copy, the
-deliverables, the phase shapes, and the name itself. `--signal` (the accent)
-ships as a placeholder until the client's palette is supplied.
+deliverables, the phase shapes, and the name itself. `--signal` (the blue) is
+still a placeholder; it survives only as the focus ring.
+
+**Three colours, and each one says something different.** Black and the paper
+grey are the ground. The marker yellow `#f2f04a` is _where you are_ — the
+current tab, the open drawer, the selected piece. The pointer red `#ff3b2f` is
+_what you are on_ — every hover and every keyboard focus, on both surfaces.
+They used to be one colour, which meant a hovered row and the current tab said
+the same thing in the same yellow and neither could be read at a glance.
+
+The red is `:root { --pop }` in `file47.css`, deliberately not scoped to
+`.f47`: the room's chrome and the plate sit outside that class, and a rule
+naming a variable they cannot see is silently dropped rather than reported.
+`#ff3b2f` and not a deeper red because the black ink stays on it at 5.55:1,
+which clears AA — a red dark enough to need white text would have made every
+hover swap two properties instead of one.
 
 It is public, unauthenticated, and deliberately a different artifact from the OS
 shell it was built alongside: printed matter that was _issued_.

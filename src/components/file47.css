@@ -24,6 +24,25 @@
   box-sizing: border-box;
 }
 
+/*
+ * The pointer colour, on the root because it is the one token both surfaces
+ * share — the screen here, and the room's chrome and plate in
+ * file47-room.css, which are outside `.f47` and would silently drop a rule
+ * naming a var they cannot see.
+ *
+ * Red is what your cursor is on; the yellow marker is where you already are.
+ * Keeping them apart means a hovered row and the current tab never say the
+ * same thing in the same colour, which is all a single highlight colour can
+ * ever say.
+ *
+ * #ff3b2f rather than a deeper red because the ink stays black on it —
+ * 5.55:1, which clears AA. A red dark enough to need white text would have
+ * made every hover swap two properties instead of one.
+ */
+:root {
+  --pop: #ff3b2f;
+}
+
 .f47 {
   --paper: #e6e6e2;
   --ink: #0b0b0b;
@@ -135,7 +154,7 @@
 
 .f47-folder:hover,
 .f47-folder:focus-visible {
-  background: var(--marker);
+  background: var(--pop);
 }
 
 .f47-folder-i {
@@ -187,7 +206,7 @@
 
 .f47-up:hover,
 .f47-up:focus-visible {
-  background: var(--marker);
+  background: var(--pop);
 }
 
 /* Which drawer is open, stated once above its contents. */
@@ -233,7 +252,7 @@
 
 .f47-grid button:hover,
 .f47-grid button:focus-visible {
-  background: var(--marker);
+  background: var(--pop);
 }
 
 /* Square wells, so fourteen pieces of fourteen different shapes read as one index
@@ -310,7 +329,7 @@
 
 .f47-row:hover,
 .f47-row:focus-visible {
-  background: var(--marker);
+  background: var(--pop);
 }
 
 .f47-row-n {
@@ -435,7 +454,7 @@
 .f47-contact a:hover,
 .f47-fine a:hover,
 .f47-done a:not(.f47-btn):hover {
-  background: var(--marker);
+  background: var(--pop);
 }
 
 /* A mail link is a fingertip target on a phone like anything else. */
@@ -538,7 +557,9 @@
 }
 
 .f47-btn:hover:not(:disabled) {
-  background: var(--signal);
+  background: var(--pop);
+  border-color: var(--pop);
+  color: var(--ink);
 }
 
 .f47-btn:disabled {
@@ -602,7 +623,7 @@
 
 .f47-send:hover {
   background: var(--ink);
-  color: var(--marker);
+  color: var(--pop);
 }
 
 /* Focus is square and in the signal colour — no inherited glow. */

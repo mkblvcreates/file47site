@@ -40,6 +40,8 @@
 .rm-booting {
   --vcr: 'FILE47 OSD', 'VCR OSD Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --hud: #f2f04a;
+  /* `--pop`, the pointer red, is on `:root` in file47.css — one value, not a
+     copy here that can drift away from it. */
   --hud-dim: #b8b48a;
   --hud-ink: #0b0b0b;
   --hud-ground: rgba(8, 7, 5, 0.9);
@@ -145,7 +147,7 @@ body:has(.rm-flat) {
 }
 
 .rm-ghost:hover {
-  background: #f2f04a;
+  background: var(--pop);
   color: #0b0b0b;
 }
 
@@ -251,11 +253,15 @@ body:has(.rm-flat) {
   image-rendering: pixelated;
 }
 
-.rm-strip button[aria-current='true'],
-.rm-strip button:hover,
-.rm-strip button:focus-visible {
+.rm-strip button[aria-current='true'] {
   border-color: #f2f04a;
   color: #f2f04a;
+}
+
+.rm-strip button:hover,
+.rm-strip button:focus-visible {
+  border-color: var(--pop);
+  color: var(--pop);
 }
 
 /* Services: five rows, each one books. */
@@ -286,7 +292,7 @@ body:has(.rm-flat) {
 
 .rm-list button:hover,
 .rm-list button:focus-visible {
-  background: #f2f04a;
+  background: var(--pop);
   color: #0b0b0b;
 }
 
@@ -691,8 +697,8 @@ body:has(.rm-flat) {
 }
 
 .rm-idle:hover .rm-idle-open {
-  background: #0333ff;
-  color: #ffffff;
+  background: var(--pop);
+  color: #0b0b0b;
 }
 
 .rm-idle-mark {
@@ -811,7 +817,7 @@ body:has(.rm-flat) {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ff4040;
+  background: var(--pop);
   animation: hud-blink 1.6s steps(1) infinite;
 }
 
@@ -859,10 +865,13 @@ body:has(.rm-flat) {
   color: var(--hud-dim);
 }
 
-.rm-strip button[aria-current='true'] .rm-slot,
+.rm-strip button[aria-current='true'] .rm-slot {
+  color: var(--hud);
+}
+
 .rm-strip button:hover .rm-slot,
 .rm-strip button:focus-visible .rm-slot {
-  color: var(--hud);
+  color: var(--pop);
 }
 
 .rm-strip button::before {
@@ -878,10 +887,13 @@ body:has(.rm-flat) {
   position: relative;
 }
 
-.rm-strip button[aria-current='true']::before,
+.rm-strip button[aria-current='true']::before {
+  color: var(--hud);
+}
+
 .rm-strip button:hover::before,
 .rm-strip button:focus-visible::before {
-  color: var(--hud);
+  color: var(--pop);
 }
 
 /* Tabs get the bracket treatment rather than a pill. */
@@ -1039,7 +1051,7 @@ body:has(.rm-flat) {
 }
 
 .pl-btn:hover {
-  background: #f2f04a;
+  background: var(--pop);
   color: #0b0b0b;
 }
 

@@ -601,13 +601,14 @@ test.describe('FILE47', () => {
       // the one page a reader takes literally, a plausible invention is the
       // worst possible failure.
       //
-      // The registered name arrived, so it is printed. The address has not, so
-      // one mark is left. They are separate fields for exactly this reason:
-      // when the two shared one, supplying the name would have made the page
-      // assert an address nobody had given.
-      await expect(page.getByText(/Registered name: FILE\.47/)).toBeVisible();
-      await expect(page.locator('.doc-todo')).toHaveCount(1);
-      await expect(page.getByText(/Registered address:/)).toBeVisible();
+      // Both facts are supplied now, so there is nothing left marked. The test
+      // stays because the mechanism is the point: it holds that the page
+      // prints what it was given and that no mark is left behind claiming
+      // otherwise. Unset either field in `PRIVACY` and this fails.
+      await expect(
+        page.getByText(/Registered as FILE\.47, Denver, Colorado/),
+      ).toBeVisible();
+      await expect(page.locator('.doc-todo')).toHaveCount(0);
       await expect(page.getByText(/keeps no database/)).toBeVisible();
     });
 

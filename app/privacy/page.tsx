@@ -16,9 +16,9 @@ import './privacy.css';
  * aspirational and nothing is boilerplate that happens not to be true.
  *
  * What MKBLV cannot know comes from `PRIVACY` in `lib/file47.ts` and renders as
- * TO CONFIRM until FILE47 supplies it. The registered name is FILE.47; the
- * registered address is still outstanding, and the two are separate fields so
- * that having one cannot make the page assert the other.
+ * TO CONFIRM until FILE47 supplies it. Both are supplied now — FILE.47, of
+ * Denver, Colorado — and they stay separate fields so that having one can
+ * never make the page assert the other.
  *
  * There is no retention period to state: the site keeps nothing, so the
  * only copy is the one in FILE47's inbox. Review with counsel before relying on
@@ -76,9 +76,9 @@ export default function File47PrivacyPage() {
       <h2>Who this is</h2>
       <p>
         FILE47 is a design and brand services practice in {CONTACT.city}, reachable at{' '}
-        <Mail />. The site is built and hosted for FILE47 by MKBLV. Registered name:{' '}
-        {PRIVACY.entity ?? <ToConfirm />}. Registered address:{' '}
-        {PRIVACY.address ?? <ToConfirm />}.
+        <Mail />. Registered as {PRIVACY.entity ?? <ToConfirm />},{' '}
+        {PRIVACY.address ?? <ToConfirm />}. The site is built and hosted for FILE47 by
+        MKBLV.
       </p>
 
       <h2>What is collected</h2>
