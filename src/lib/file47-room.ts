@@ -391,6 +391,9 @@ const LABELS: Readonly<Record<string, string>> = {
 
   /* CLOTHING */
   'fred-shirt-variant': "HOUDINI'S — APPAREL",
+  'in-the-field': 'IN THE FIELD — BRAND SHEET',
+  'lily-nova': 'LILY NOVA — SPRING 26 TEE',
+  'lily-nova-2': 'LILY NOVA — SHIRT ARTWORK',
   'houdini-fred-bronco-edition': "HOUDINI'S — BRONCO EDITION",
   'houdini-s-escape-the-ordinary-denver-federal-back': "HOUDINI'S — SPADE TEE, BACK",
   'new-jug': 'CRYSTAL CLEAR WATER — NAVY SET',
@@ -400,6 +403,7 @@ const LABELS: Readonly<Record<string, string>> = {
 
   /* MARKETING */
   '420-dreamy-flyer': '420 DREAMY ILLUSIONS — MILE HIGH TOURS',
+  'unc-banner-tent-final': 'NORTHERN COLORADO — BEAR WITNESS',
   'dia-de-los-muertos-2': 'DÍA DE LOS MUERTOS — CAMPAIGN',
   'dia-de-los-muertos-2-p2': 'NAPAWIKA — FIND US CARD',
   flyer: 'ABOVE — WELLNESS SESSION ONE',

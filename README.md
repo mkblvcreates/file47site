@@ -4,7 +4,7 @@ WebGL custom interactive 3D portfolio and branding site for **File.47_**, a
 design firm. The site is a surveillance room, and the site is on one of its
 screens.
 
-**Live:** https://file47-site.vercel.app · **Contact:** file47studios@pm.me
+**Live:** https://www.file47.studio · **Contact:** file47studios@pm.me
 
 ---
 

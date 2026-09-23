@@ -1,7 +1,11 @@
 # FILE47 — the work
 
-**Sixty-five pieces**, filed under four disciplines. All of them are in the
+**Sixty-nine pieces**, filed under four disciplines. All of them are in the
 drawers; **fourteen** of them also have a screen of their own in the room.
+
+The count moves. Work arrives by being dropped into
+[`work-source/`](../work-source) on GitHub, so this document is a snapshot of a
+list that grows — the site reads the manifest, not this table.
 
 ## The archive and the wall are two lists
 
@@ -35,7 +39,9 @@ asserted, because either would be a promise the site cannot keep.
 Supplied by MKBLV as past work, in four folders by discipline.
 
 **Cleared for public display by MKBLV on 2026-09-21**, all of it, including
-the pieces made for third parties. The CU Brain Imaging Center and Lou's
+the pieces made for third parties. Work added since through `work-source/` is
+cleared by the act of uploading it — the folders are MKBLV's own, on MKBLV's
+repository, and nothing else can put a piece on the site. The CU Brain Imaging Center and Lou's
 lockups were supplied separately the same day and are covered by the same
 clearance. The record is kept here so it is always clear what was cleared and
 when; a piece added later needs its own clearance.
@@ -103,19 +109,22 @@ supplied PDF it was rendered from.
 | `lucilightsmoke-box-p5`        | ●    | LUCILIGHT — IDENTITY              | `lucilightSMOKE box.pdf p5`         |
 | `lucilightsmoke-box-p6`        | ●    | LUCILIGHT — MARK                  | `lucilightSMOKE box.pdf p6`         |
 
-### CLOTHING — 7
+### CLOTHING — 10
 
 | Piece                                               | Wall | Label                          | Source supplied                                               |
 | --------------------------------------------------- | ---- | ------------------------------ | ------------------------------------------------------------- |
 | `fred-shirt-variant`                                | ●    | HOUDINI'S — APPAREL            | `FRED SHIRT VARIANT.png`                                      |
 | `houdini-fred-bronco-edition`                       | ●    | HOUDINI'S — BRONCO EDITION     | `HOUDINI FRED - BRONCO EDITION .png`                          |
 | `houdini-s-escape-the-ordinary-denver-federal-back` |      | HOUDINI'S — SPADE TEE, BACK    | `HOUDINI’S � ESCAPE THE ORDINARY   DENVER � FEDERAL BACK.png` |
+| `in-the-field`                                      |      | IN THE FIELD — BRAND SHEET     | `IN-THE-FIELD.png`                                            |
+| `lily-nova-2`                                       |      | LILY NOVA — SHIRT ARTWORK      | `LILY NOVA-2.png`                                             |
+| `lily-nova`                                         |      | LILY NOVA — SPRING 26 TEE      | `LILY NOVA.png`                                               |
 | `new-jug`                                           | ●    | CRYSTAL CLEAR WATER — NAVY SET | `NEW JUG.jpg`                                                 |
 | `tan-back`                                          |      | HOUDINI'S — MONOGRAM TEE, TAN  | `TAN BACK.png`                                                |
 | `tan-variant-back`                                  |      | HOUDINI'S — SPADE TEE, TAN     | `TAN VARIANT BACK.png`                                        |
 | `untitled-1`                                        | ●    | CRYSTAL CLEAR WATER — GREY SET | `Untitled-1.jpg`                                              |
 
-### MARKETING — 8
+### MARKETING — 9
 
 | Piece                      | Wall | Label                                  | Source supplied                 |
 | -------------------------- | ---- | -------------------------------------- | ------------------------------- |
@@ -123,6 +132,7 @@ supplied PDF it was rendered from.
 | `flyer`                    |      | ABOVE — WELLNESS SESSION ONE           | `FLYER.png`                     |
 | `messages-image-788733092` |      | MO-DEM — LAUNCH                        | `Messages Image(788733092).png` |
 | `promo-mondat`             |      | HOUDINI'S — WE HATE MONDAYS TOO        | `promo mondat.png`              |
+| `unc-banner-tent-final`    |      | NORTHERN COLORADO — BEAR WITNESS       | `unc banner _ tent final_.png`  |
 | `dia-de-los-muertos-2`     | ●    | DÍA DE LOS MUERTOS — CAMPAIGN          | `dia de los muertos 2.pdf p1`   |
 | `dia-de-los-muertos-2-p2`  |      | NAPAWIKA — FIND US CARD                | `dia de los muertos 2.pdf p2`   |
 | `wrap-kings-card`          | ●    | WRAP KINGZ — CARDS                     | `wrap kings card.pdf p1`        |
@@ -158,39 +168,45 @@ it goes back.
 
 ## What is not here
 
-Thirty files in the supplied Drive folder are **not** in the archive, and none
-of them were judged unworthy — they could not be fetched or converted in this
-environment. They are listed so the gap is a known gap rather than a silent one.
+A first pass of the handover could not be fetched here, and the list below is
+what was left. It is shrinking: **LILY NOVA** and the **UNC banner** were in it
+and are now on the site, exported to PNG and dropped into `work-source/` on
+GitHub. That is the route for the rest of it — the size limits below describe
+the tool that pulled the original folder, not a property of the files.
 
-**Over the transfer limit (20 files).** The Drive tool used to pull the folder
-refuses anything over 10 MB outright, and in practice drops the connection
+None of these were judged unworthy. They are listed so the gap stays a known
+gap rather than a silent one, and lines come out as work lands.
+
+**Over the transfer limit.** The Drive tool used to pull the original folder
+refuses anything over 10 MB outright, and in practice dropped the connection
 somewhere above ~5 MB — 4.4 MB came through, 6.3 MB failed on three separate
-attempts. Direct `drive.google.com` access is blocked by this environment's
-network policy, so there is no way round it from here. Everything below is
-perfectly convertible on a machine that can reach the file:
+attempts. Direct `drive.google.com` access was blocked by that environment's
+network policy too.
 
-| Folder     | File                        | Size   |
-| ---------- | --------------------------- | ------ |
-| logos      | `misa merch.pdf`            | 15 MB  |
-| logos      | `chicken truck .pdf`        | 52 MB  |
-| production | `BEL-AIR.pdf`               | 23 MB  |
-| production | `hemp woods packaging.pdf`  | 23 MB  |
-| production | `curated logo REVAMP.pdf`   | 59 MB  |
-| production | `enzo milk.pdf`             | 18 MB  |
-| production | `enzo peanut butter.pdf`    | 11 MB  |
-| production | `enzo vegan.pdf`            | 17 MB  |
-| production | `enzo fruity.pdf`           | 16 MB  |
-| production | `enzo STRAWBERRY WAFER.pdf` | 11 MB  |
-| production | `WAFERS 2.pdf`              | 56 MB  |
-| production | `gelato cake.pdf`           | 18 MB  |
-| production | `lucilightalpine box.pdf`   | 10 MB  |
-| production | `lucilightalpine box 2.pdf` | 10 MB  |
-| production | `BANNER  copy.pdf`          | 22 MB  |
-| production | `chef cbd package.pdf`      | 87 MB  |
-| clothing   | `LILY NOVA.pdf`             | 54 MB  |
-| marketing  | `unc banner final .pdf`     | 137 MB |
-| marketing  | `LOU AD1.pdf`               | 80 MB  |
-| marketing  | `Sequence 01.mov`           | 15 MB  |
+None of that constrains the files themselves. Each converts fine from a machine
+that has it, and a PNG export of any of them is well inside GitHub's 25 MB web
+uploader — which is how LILY NOVA and the UNC banner got here:
+
+| Folder     | File                        | Size  |
+| ---------- | --------------------------- | ----- |
+| logos      | `misa merch.pdf`            | 15 MB |
+| logos      | `chicken truck .pdf`        | 52 MB |
+| production | `BEL-AIR.pdf`               | 23 MB |
+| production | `hemp woods packaging.pdf`  | 23 MB |
+| production | `curated logo REVAMP.pdf`   | 59 MB |
+| production | `enzo milk.pdf`             | 18 MB |
+| production | `enzo peanut butter.pdf`    | 11 MB |
+| production | `enzo vegan.pdf`            | 17 MB |
+| production | `enzo fruity.pdf`           | 16 MB |
+| production | `enzo STRAWBERRY WAFER.pdf` | 11 MB |
+| production | `WAFERS 2.pdf`              | 56 MB |
+| production | `gelato cake.pdf`           | 18 MB |
+| production | `lucilightalpine box.pdf`   | 10 MB |
+| production | `lucilightalpine box 2.pdf` | 10 MB |
+| production | `BANNER  copy.pdf`          | 22 MB |
+| production | `chef cbd package.pdf`      | 87 MB |
+| marketing  | `LOU AD1.pdf`               | 80 MB |
+| marketing  | `Sequence 01.mov`           | 15 MB |
 
 Three more are nominally under the 10 MB limit but above the size that
 actually transfers, and failed every attempt: `donut label expanded .pdf`

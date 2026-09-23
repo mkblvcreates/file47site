@@ -32,15 +32,25 @@ The decisions that shaped this, and the ones that were reversed:
 
 ## Deployment
 
-|                   |                                                    |
-| ----------------- | -------------------------------------------------- |
-| Vercel project    | `file47-site` (`prj_5Icmyv4pJG6qotwdtTtPT8HI5Bvf`) |
-| Repository        | `mkblvcreates/file47site`, git-linked              |
-| Root directory    | the repository root                                |
-| Production branch | `main`                                             |
+|                   |                                                   |
+| ----------------- | ------------------------------------------------- |
+| Domain            | `file47.studio` — apex 308s to `www`              |
+| DNS               | Cloudflare, pointed at Vercel                     |
+| Vercel project    | `file47site` (`prj_BVKYVt9I6EDAPgxAUNUx5HnX9oEw`) |
+| Repository        | `mkblvcreates/file47site`, git-linked             |
+| Root directory    | the repository root                               |
+| Production branch | `main`                                            |
 
-Production is served from `main`. Until the client's own domain is attached,
-the project's `*.vercel.app` URL is the address.
+Production is served from `main`. The domain is registered and resolved at
+Cloudflare and points at Vercel, which holds the certificate and serves the
+site. `file47site.vercel.app` still answers, and is the address to test against
+when DNS is the thing in question.
+
+**A note if those records are ever touched.** Cloudflare's proxy — the orange
+cloud — in front of Vercel causes redirect loops and certificate failures
+unless SSL/TLS is set to Full (strict). These records are DNS only, which is
+why it works. Turning the proxy on is the one change that takes the site down
+without anything in this repository changing.
 
 **Environment.** None. The app has no dynamic route and no secret to
 hold — the booking screen composes a `mailto:` in the browser, so there is no
